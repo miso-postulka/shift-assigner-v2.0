@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import EmployeeSchedule from './EmployeeSchedule';
 import { assignShifts } from './assignShifts';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
 
 interface Employee {
   name: string;
@@ -62,6 +64,25 @@ const App: React.FC = () => {
     setShiftCounts(counts);
   };
 
+  const handleGeneratePDF = () => {
+    const doc = new jsPDF();
+
+    const tableData = schedule
+      .map((employeeIndex, day) => {
+        if (employeeIndex !== null) {
+          return [day + 1, employees[employeeIndex].name];
+        }
+        return null;
+      })
+      .filter((row) => row !== null) as [number, string][];
+
+    doc.autoTable({
+      body: tableData,
+    });
+
+    doc.save('table.pdf');
+  };
+
   return (
     <div className="container-fluid">
       <div className="row d-flex justify-content-start">
@@ -76,25 +97,28 @@ const App: React.FC = () => {
           </div>
         ))}
       </div>
-      <button className="btn btn-primary mt-4" onClick={handleGenerateSchedule}>
+      <button className="btn btn-primary mt-" onClick={handleGenerateSchedule}>
         Generate Schedule
       </button>
+      <button className="btn btn-primary m-4 " onClick={handleGeneratePDF}>
+        Generate PDF
+      </button>
       <div className="mt-4">
-        <h2>Assigned Shifts</h2>
+        <h2>Counts</h2>
         <ul className="list-group">
-          {schedule.map((employeeIndex, day) => (
-            <li key={day} className="list-group-item">
-              Day {day + 1}: {employeeIndex !== null ? employees[employeeIndex].name : 'Unassigned'}
+          {employees.map((employee, index) => (
+            <li key={index} className="list-group-item">
+              {employee.name}: {shiftCounts[index]} shifts assigned
             </li>
           ))}
         </ul>
       </div>
       <div className="mt-4">
-        <h2>Shift Counts</h2>
+        <h2>Schedule</h2>
         <ul className="list-group">
-          {employees.map((employee, index) => (
-            <li key={index} className="list-group-item">
-              {employee.name}: {shiftCounts[index]} shifts assigned
+          {schedule.map((employeeIndex, day) => (
+            <li key={day} className="list-group-item">
+              {day + 1}: {employeeIndex !== null ? employees[employeeIndex].name : 'Unassigned'}
             </li>
           ))}
         </ul>
