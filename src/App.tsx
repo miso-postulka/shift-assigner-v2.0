@@ -57,7 +57,6 @@ const App: React.FC = () => {
     );
     setSchedule(result);
 
-    // Calculate the shift counts for each employee
     const counts = employees.map((_, index) =>
       result.filter((employeeIndex) => employeeIndex === index).length
     );
@@ -100,28 +99,30 @@ const App: React.FC = () => {
       <button className="btn btn-primary mt-" onClick={handleGenerateSchedule}>
         Generate Schedule
       </button>
-      <button className="btn btn-primary m-4 " onClick={handleGeneratePDF}>
+      <button className="btn btn-primary m-4" onClick={handleGeneratePDF}>
         Generate PDF
       </button>
-      <div className="mt-4">
-        <h2>Counts</h2>
-        <ul className="list-group">
-          {employees.map((employee, index) => (
-            <li key={index} className="list-group-item">
-              {employee.name}: {shiftCounts[index]} shifts assigned
-            </li>
-          ))}
-        </ul>
-      </div>
-      <div className="mt-4">
-        <h2>Schedule</h2>
-        <ul className="list-group">
-          {schedule.map((employeeIndex, day) => (
-            <li key={day} className="list-group-item">
-              {day + 1}: {employeeIndex !== null ? employees[employeeIndex].name : 'Unassigned'}
-            </li>
-          ))}
-        </ul>
+      <div className="row mt-4">
+        <div className="col-md-6">
+          <h2>Schedule</h2>
+          <ul className="list-group">
+            {schedule.map((employeeIndex, day) => (
+              <li key={day} className="list-group-item">
+                {day + 1}: {employeeIndex !== null ? employees[employeeIndex].name : 'Unassigned'}
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div className="col-md-6">
+          <h2>Counts</h2>
+          <ul className="list-group">
+            {employees.map((employee, index) => (
+              <li key={index} className="list-group-item">
+                {employee.name}: {shiftCounts[index]} shifts assigned
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
     </div>
   );
